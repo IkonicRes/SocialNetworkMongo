@@ -1,6 +1,6 @@
 const {Schema, model} = require('mongoose');
-const thoughtSchema = require('./Thought');
-const friendSchema = require('./Friend');
+// const thoughtSchema = require('./Thought');
+// const friendSchema = require('./Friend');
 
 const userSchema = new Schema(
     {
@@ -19,8 +19,8 @@ const userSchema = new Schema(
             required: true,
             max_length: 50
         },
-        friends: [friendSchema],
-        thoughts: [thoughtSchema]
+        // friends: [friendSchema],
+        // thoughts: [thoughtSchema]
     },
     {
         toJSON: {
@@ -29,4 +29,6 @@ const userSchema = new Schema(
     }
 );
 
-const User = model('user', userSchema)
+const User = model('User', userSchema)
+
+module.exports = User
