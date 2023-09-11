@@ -274,7 +274,7 @@ Fulfilling the following can add up to 10 points to your grade. Note that the hi
 
 You are required to submit BOTH of the following for review:
 
-* A walkthrough video demonstrating the functionality of the application and all of the acceptance criteria being met.
+0
 
 * The URL of the GitHub repository. Give the repository a unique name and include a README describing the project.
 

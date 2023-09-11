@@ -6,47 +6,58 @@ module.exports = {
     async getThought(req, res) {
         try {
             const thought = await Thought.findOne({ _id: req.params.thoughtId })
-            return res.json(thought);
+            const thoughtObject = thought.toObject()
+            return res.json(thoughtObject);
         } catch (error) {
+            console.log(error)
             res.status(500).json(error)
         }
     },
     async getThoughts(req, res) {
         try {
-            const thoughts = await Thought.find()
-            const thoughtObj = {
-                thoughts
-            }
-            return res.json(thoughtObj);
+          // Find all thoughts associated with the user
+          const thoughts = await Thought.find();
+      
+          // Convert the thoughts array to an array of plain objects
+          const thoughtObjects = thoughts.map((thought) => thought.toObject());
+      
+          return res.json(thoughtObjects);
         } catch (error) {
-            res.status(500).json(error)
+            console.log(error)
+          res.status(500).json(error);
         }
-    },
+      },
     async createThought(req, res) {
         try {
-          const { text } = req.body;
-          const userId = req.userId; // Use req.userId to access the extracted userId
-      
+          const text = req.body.text;
+          const userId = req.body.userId;
+          console.log(userId)
+          // Use req.userId to access the extracted userId
+          let userRef = await User.findOne({ _id: userId})
+          console.log(userRef)
+          const name = userRef.userName
+          console.log(name)
           const thought = new Thought({
             text,
-            user: userId, // Associate the thought with the user
+            username: name, // Associate the thought with the user
           });
       
           await thought.save();
-
-          const user = await User.findByIdAndUpdate(
-            userId,
-            { $push: { thoughts: thought._id } },
-            { new: true } // To return the updated user
-          );
-          // Return a response indicating success
-          res.status(201).json(thought);
-        } catch (error) {
-          // Handle errors
-          console.error(error);
-          res.status(500).json({ error: 'Server error' });
-        }
-      },
+            const user = await User.findByIdAndUpdate(
+                userId,
+                { $push: { thoughts: thought._id } },
+                { new: true } // To return the updated user
+            );
+            const thoughtObject = thought.toObject();
+            const userObject = user.toObject();
+            // Return a response indicating success
+            res.status(201).json(thoughtObject);
+            } catch (error) {
+            // Handle errors
+            console.error(error);
+            res.status(500).json({ error: 'Server error' });
+            }
+        },
     async updateThought(req, res) {
         try {
             const thought = await Thought.findOneAndUpdate(
@@ -58,8 +69,10 @@ module.exports = {
             if (!thought) {
                 return res.status(404).json({ message: 'No thought with this ID!'})
             }
-            res.json(thought)
+            const thoughtObject = thought.toObject()
+            res.status(201).json(thoughtObject)
         } catch (error) {
+            console.log(error)
             res.status(500).json(error)
         }
     },
