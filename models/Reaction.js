@@ -1,22 +1,19 @@
-// const { Schema, model } = require('mongoose')
+const { Schema, model } = require('mongoose')
 
-// const User = require('./User')
+const User = require('./User')
 
-// const reactionSchema = new Schema(
-//     {
-//         reactionType: {
+const reactionSchema = new Schema({
+    reaction: Number,
+    thought: {
+        type: Schema.Types.ObjectId,
+        ref: 'Thought'
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
+})
 
-//         },
-//         reactor: User
-//     },
-//     {
-//         toJSON: {
-//             virtuals: true
-//         },
-//         id: false,
-//     }
-// )
+const Reaction = model('reaction', reactionSchema)
 
-// const Reaction = model('reaction', reactionSchema)
-
-// module.exports = Reaction
+module.exports = Reaction

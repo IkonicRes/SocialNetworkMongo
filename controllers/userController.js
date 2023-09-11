@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 
-const { User, Thought, Friend } = require('../models')
+const { User } = require('../models')
 
 module.exports = { 
     async getUser(req, res) {
@@ -30,16 +30,31 @@ module.exports = {
             res.status(500).json(error)
         }
     },
+    async updateUser(req, res) {
+        try {
+            const user = await User.findOneAndUpdate(
+                { _id: req.params.userId },
+                { $set:  req.body },
+                { runValidators: true, new: true }
+            )
+            
+            if (!user) {
+                return res.status(404).json({ message: 'No User with this ID!'})
+            }
+            res.json(user)
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     // Delete a student and remove them from the course
-    async deleteStudent(req, res) {
+    async deleteUser(req, res) {
         try {
             const user = await User.findOneAndRemove({ _id: req.params.userId });
 
             if (!user) {
-                return res.status(404).json({ message: 'No such student exists' })
+                return res.status(404).json({ message: 'No such user exists' })
             }
-
-            res.json({ message: 'Student successfully deleted' });
+            res.json({ message: 'User successfully deleted' });
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
