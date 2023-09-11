@@ -30,13 +30,12 @@ const extractThoughtId = (req, res, next) => {
     console.log('Extracted thoughtId:', req.thoughtId); // Check the extracted userId
     next(); // Call the next middleware or route handler
   };
-  
 
 router.route('/').get(getUsers).post(createUser)
 router.route('/:userId').get(getUser).put(updateUser).delete(deleteUser)
 router.route('/:userId/thoughts').get(getThoughts).post(extractUserId, createThought)
-router.route('/:userId/:thoughtId').get(getThought).put(updateThought).delete(deleteThought)
-router.route('/:userId/:thoughtId/reactions').get(getReactions).post(extractUserId, extractThoughtId, createReaction).put(updateReaction).delete(deleteReaction)
-router.route('/:userId/friends').get(getFriends).post(addFriend)
-router.route('/:userId/:friendId').get(getFriend).delete(deleteFriend)
+router.route('/:userId/thoughts/:thoughtId').get(getThought).put(updateThought).delete(deleteThought)
+router.route('/:userId/thoughts/:thoughtId/reactions').get(getReactions).post(extractUserId, extractThoughtId, createReaction).put(updateReaction).delete(deleteReaction)
+router.route('/:userId/friends').get(getFriends).post(extractUserId, addFriend)
+router.route('/:userId/friends/:friendId').get(getFriend).delete(deleteFriend)
 module.exports = router

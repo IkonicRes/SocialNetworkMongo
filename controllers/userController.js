@@ -62,13 +62,14 @@ module.exports = {
     },
     async addFriend(req, res) {
         try {
+          console.log(req.params)
           const userId = req.params.userId;
-          const friendId = req.params.friendId;
+          const friendId = req.body.friendId;
       
           // Fetch the user and friend documents
           const user = await User.findOne({ _id: userId });
           const friend = await User.findOne({ _id: friendId });
-      
+          console.log(friend)
           // Check if the user and friend exist
           if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -82,8 +83,8 @@ module.exports = {
           await user.save();
       
           // Optionally, you can also add the user's ID to the friend's friend list
-          friend.friends.push(userId);
-          await friend.save();
+        //   friend.friends.push(userId);
+        //   await friend.save();
       
           return res.json(user); // Return the updated user
         } catch (err) {
@@ -115,12 +116,17 @@ module.exports = {
           }
       
           const friends = await User.find({ _id: { $in: user.friends } });
+      
+          if (!friends) {
+            return res.status(404).json({ error: 'No friends found for the user' });
+          }
+      
           return res.json(friends);
         } catch (error) {
+          console.error(error); // Log the error for debugging
           res.status(500).json(error);
         }
       },
-      
       async deleteFriend(req, res) {
         try {
           const userId = req.params.userId;
