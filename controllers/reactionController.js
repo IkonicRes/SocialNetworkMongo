@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 
-const { Reaction } = require('../models')
+const { Reaction, Thought } = require('../models')
 
 module.exports = { 
     async getReaction(req, res) {
@@ -24,15 +24,28 @@ module.exports = {
     },
     async createReaction(req, res) {
         try {
-          const { text } = req.body;
+          const { react } = req.body; // Ensure react is correctly sent in the request body
           const userId = req.userId; // Use req.userId to access the extracted userId
+          const thoughtId = req.params.thoughtId; // Use req.params to get the thoughtId from the route parameters
       
+          // Check if the thought and user exist
+          const thought = await Thought.findById(thoughtId);
+          if (!thought) {
+            return res.status(404).json({ error: 'Thought not found' });
+          }
+      
+          // Create the reaction
           const reaction = new Reaction({
-            text,
-            user: userId, // Associate the reaction with the user
+            react,
+            user: userId,
+            thought: thoughtId,
           });
       
           await reaction.save();
+      
+          // Update the thought to include the reaction
+          thought.reactions.push(reaction._id);
+          await thought.save();
       
           // Return a response indicating success
           res.status(201).json(reaction);
@@ -42,6 +55,7 @@ module.exports = {
           res.status(500).json({ error: 'Server error' });
         }
       },
+      
     async updateReaction(req, res) {
         try {
             const reaction = await Reaction.findOneAndUpdate(

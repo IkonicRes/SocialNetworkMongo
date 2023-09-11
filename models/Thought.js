@@ -6,9 +6,13 @@ const thoughtSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
+  reactions: [{
+  type: Schema.Types.ObjectId,
+  ref: 'Reaction'
+}]
   // Other thought fields
 });
 
-const Thought = model('thought', thoughtSchema)
+const Thought = model('Thought', thoughtSchema)
 
 module.exports = Thought

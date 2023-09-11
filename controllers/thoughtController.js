@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 
-const { Thought } = require('../models')
+const { Thought, User } = require('../models')
 
 module.exports = { 
     async getThought(req, res) {
@@ -33,7 +33,12 @@ module.exports = {
           });
       
           await thought.save();
-      
+
+          const user = await User.findByIdAndUpdate(
+            userId,
+            { $push: { thoughts: thought._id } },
+            { new: true } // To return the updated user
+          );
           // Return a response indicating success
           res.status(201).json(thought);
         } catch (error) {

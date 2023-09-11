@@ -36,11 +36,11 @@ module.exports = {
                 { _id: req.params.userId },
                 { $set:  req.body },
                 { runValidators: true, new: true }
-            )
-            
-            if (!user) {
-                return res.status(404).json({ message: 'No User with this ID!'})
-            }
+                )
+                
+                if (!user) {
+                    return res.status(404).json({ message: 'No User with this ID!'})
+                }
             res.json(user)
         } catch (error) {
             res.status(500).json(error)
@@ -50,7 +50,7 @@ module.exports = {
     async deleteUser(req, res) {
         try {
             const user = await User.findOneAndRemove({ _id: req.params.userId });
-
+            
             if (!user) {
                 return res.status(404).json({ message: 'No such user exists' })
             }
@@ -58,6 +58,92 @@ module.exports = {
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
-            }
-        },
+        }
+    },
+    async addFriend(req, res) {
+        try {
+          const userId = req.params.userId;
+          const friendId = req.params.friendId;
+      
+          // Fetch the user and friend documents
+          const user = await User.findOne({ _id: userId });
+          const friend = await User.findOne({ _id: friendId });
+      
+          // Check if the user and friend exist
+          if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+          if (!friend) {
+            return res.status(404).json({ error: 'Friend not found' });
+          }
+      
+          // Add the friend's ID to the user's friend list
+          user.friends.push(friendId);
+          await user.save();
+      
+          // Optionally, you can also add the user's ID to the friend's friend list
+          friend.friends.push(userId);
+          await friend.save();
+      
+          return res.json(user); // Return the updated user
+        } catch (err) {
+          res.status(500).json(err);
+        }
+      },
+      async getFriend(req, res) {
+        try {
+          const friendId = req.params.friendId;
+          const friend = await User.findOne({ _id: friendId });
+      
+          if (!friend) {
+            return res.status(404).json({ error: 'Friend not found' });
+          }
+      
+          return res.json(friend);
+        } catch (error) {
+          res.status(500).json(error);
+        }
+      },
+      
+      async getFriends(req, res) {
+        try {
+          const userId = req.params.userId;
+          const user = await User.findOne({ _id: userId });
+      
+          if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+      
+          const friends = await User.find({ _id: { $in: user.friends } });
+          return res.json(friends);
+        } catch (error) {
+          res.status(500).json(error);
+        }
+      },
+      
+      async deleteFriend(req, res) {
+        try {
+          const userId = req.params.userId;
+          const friendId = req.params.friendId;
+      
+          // Fetch the user document
+          const user = await User.findOne({ _id: userId });
+      
+          if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+      
+          // Remove the friend's ID from the user's friend list
+          const index = user.friends.indexOf(friendId);
+          if (index !== -1) {
+            user.friends.splice(index, 1);
+            await user.save();
+          }
+      
+          return res.json(user);
+        } catch (error) {
+          res.status(500).json(error);
+        }
+      }
+      
 }
