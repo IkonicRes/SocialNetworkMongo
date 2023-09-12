@@ -6,29 +6,35 @@ module.exports = {
   async getThought(req, res) {
     try {
       const thought = await Thought.findOne({ _id: req.params.thoughtId })
+        .populate({
+          path: 'user',
+          select: 'userName', // Include only the 'userName' field from the user
+        })
         .populate('reactions') // Populate the reactions field
         .exec();
-
+  
       if (!thought) {
         return res.status(404).json({ error: 'Thought not found' });
       }
-
+  
       // Map the populated reactions to get the 'react' strings
       const reactions = thought.reactions.map((reaction) => reaction.react);
-
+  
       // Create an object with the thought data and reactions
       const thoughtObject = {
         _id: thought._id,
         // Add other thought properties here as needed
+        user: thought.user, // Include the user with username
         reactions: reactions,
       };
-
+  
       return res.json(thoughtObject);
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
     }
   },
+  
 
   async getThoughts(req, res) {
     try {
@@ -59,27 +65,20 @@ module.exports = {
     try {
       const text = req.body.text;
       const userId = req.body.userId;
-      console.log(userId);
       // Use req.userId to access the extracted userId
       let userRef = await User.findOne({ _id: userId });
-      console.log(userRef);
       const name = userRef.userName;
-      console.log(name);
-      const thought = new Thought({
+      const thought = Thought.create({
         text,
         username: name, // Associate the thought with the user
       });
-
-      await thought.save();
       const user = await User.findByIdAndUpdate(
         userId,
         { $push: { thoughts: thought._id } },
         { new: true }, // To return the updated user
       );
-      const thoughtObject = thought.toObject();
-      const userObject = user.toObject();
       // Return a response indicating success
-      res.status(201).json(thoughtObject);
+      res.status(201).json(thought);
     } catch (error) {
       // Handle errors
       console.error(error);
@@ -104,7 +103,7 @@ module.exports = {
       res.status(500).json(error);
     }
   },
-  // Delete a student and remove them from the course
+  // Delete a thought and remove it from the user
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndRemove({
