@@ -133,5 +133,5 @@ const usersData = [
   },
 ];
 
-  // Export the functions for use in seed.js
-module.exports =  usersData;
+// Export the functions for use in seed.js
+module.exports = usersData;
