@@ -16,6 +16,10 @@ const thoughtSchema = new Schema(
       maxlength: 40,
       required: true,
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
     reactions: [
       {
         type: Schema.Types.ObjectId,

@@ -21,12 +21,7 @@ module.exports = {
       const reactions = thought.reactions.map((reaction) => reaction.react);
   
       // Create an object with the thought data and reactions
-      const thoughtObject = {
-        _id: thought._id,
-        // Add other thought properties here as needed
-        user: thought.user, // Include the user with username
-        reactions: reactions,
-      };
+      const thoughtObject = thought.toObject();
   
       return res.json(thoughtObject);
     } catch (error) {
@@ -34,6 +29,7 @@ module.exports = {
       res.status(500).json(error);
     }
   },
+  
   
 
   async getThoughts(req, res) {
@@ -47,11 +43,7 @@ module.exports = {
         const reactions = thought.reactions.map((reaction) => reaction.react);
 
         // Create an object with the thought data and reactions
-        return {
-          _id: thought._id,
-          // Add other thought properties here as needed
-          reactions: reactions,
-        };
+        return thought.toObject()
       });
 
       return res.json(thoughtObjects);
@@ -63,26 +55,27 @@ module.exports = {
 
   async createThought(req, res) {
     try {
-      const text = req.body.text;
+      // const text = req.body.text;
       const userId = req.body.userId;
       // Use req.userId to access the extracted userId
-      let userRef = await User.findOne({ _id: userId });
-      const name = userRef.userName;
-      const thought = Thought.create({
-        text,
-        username: name, // Associate the thought with the user
-      });
-      const user = await User.findByIdAndUpdate(
-        userId,
+      // let userRef = await User.findOne({ _id: userId });
+      // const name = userRef.userName;
+      const thought =await Thought.create(req.body);
+      console.log(thought)
+      const user = await User.findOneAndUpdate(
+        {_id:userId},
         { $push: { thoughts: thought._id } },
         { new: true }, // To return the updated user
       );
       // Return a response indicating success
-      res.status(201).json(thought);
+      if (!user) {
+        return res.status(404).json({ message: 'Thought created without a User Associated' });
+      }
+       res.json({ message: 'Thought Created!' });
     } catch (error) {
       // Handle errors
       console.error(error);
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json(error.message);
     }
   },
   async updateThought(req, res) {

@@ -29,14 +29,15 @@ module.exports = {
   async getUsers(req, res) {
     try {
       const users = await User.find()
-        .populate({
-          path: 'thoughts',
-          model: 'Thought',
-        })
-        .populate({
-          path: 'friends',
-          model: 'User',
-        });
+      .select("-id")
+        // .populate({
+        //   path: 'thoughts',
+        //   model: 'Thought',
+        // })
+        // .populate({
+        //   path: 'friends',
+        //   model: 'User',
+        // });
 
       const userObj = {
         users,
@@ -51,7 +52,8 @@ module.exports = {
       const user = await User.create(req.body);
       res.json(user);
     } catch (error) {
-      res.status(500).json(error);
+  
+      res.status(500).json(error.message);
     }
   },
   async updateUser(req, res) {
@@ -83,7 +85,7 @@ module.exports = {
   
       // Find and delete the user's thoughts
         // Delete the thought
-      await Thought.deleteMany({_id: { $in: user.thoughts._id }});
+      await Thought.deleteMany({_id: {$in: user.thoughts}});
       // Now delete the user
   
       return res.status(200).json({ message: 'User and associated thoughts deleted successfully' });
@@ -120,7 +122,7 @@ module.exports = {
 
       return res.json(user); // Return the updated user
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   },
   async getFriend(req, res) {

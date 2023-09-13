@@ -3,29 +3,32 @@ const { ObjectId } = require('mongoose').Types;
 const { Reaction, Thought } = require('../models');
 
 module.exports = {
-  async getReaction(req, res) {
-    try {
-      const reaction = await Reaction.findOne({ _id: req.params.reactionId });
-      return res.json(reaction);
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  },
-  async getReactions(req, res) {
-    try {
-      // Find all reactions
-      const reactions = await Reaction.find();
-
-      const reactionObj = {
-        reactions,
-      };
-
-      return res.json(reactionObj);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json(error);
-    }
-  },
+  // async getReaction(req, res) {
+  //   try {
+  //     const reaction = await Reaction.findOne({ _id: req.params.reactionId });
+  //     return res.json(reaction);
+  //   } catch (error) {
+  //     res.status(500).json(error);
+  //   }
+  // },
+  // async getReactions(req, res) {
+  //   try {
+  //     // Find all reactions
+  //     const reactions = await Reaction.find()
+  //     // const reactions = await Thought.findById({ _id: req.params.thoughtId })
+  
+  //     // Create an object to hold the reactions
+  //     const reactionObj = {
+  //       reactions, // Include the reactions in the response
+  //     };
+  //     console.log(reactionObj)
+  //   res.status(200).json(reactionObj);
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json(error);
+  //   }
+  // },
+  
   async createReaction(req, res) {
     try {
       const react = req.body.reaction; // Ensure react is correctly sent in the request body
@@ -50,7 +53,14 @@ module.exports = {
       thought.reactions.push(reaction._id);
       await thought.save();
 
-      const thoughtObject = thought.toObject();
+      const thoughtObject = {
+        _id: thought._id,
+        text: thought.text,
+        username: thought.username,
+        reactions: reaction.react,
+        createdAt: thought.createdAt,
+        __v: thought.__v
+      };
       // Return a response indicating success
       res.status(201).json(thoughtObject);
     } catch (error) {
