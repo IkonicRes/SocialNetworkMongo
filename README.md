@@ -13,7 +13,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Description
-A mongoose back-end for social networks.
+A mongoose back-end for social networks. I wanted to utilize my understanding of NoSQL databases and MongoDB/Mongoose specifically to create a back-end for a social network. You can manipulate a userbase and add associated friends, thoughts and reactions to thoughts.
 
 ## Installation
 Clone the repo to your machine, then run the command "npm install" at the project's base directory. If you would like to seed users for a demo, run "npm run seed". Simple.
