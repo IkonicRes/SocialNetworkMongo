@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const reactionSchema = new Schema(
   {
-    react: String, // Update the field name to "react"
+    react: String, 
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
