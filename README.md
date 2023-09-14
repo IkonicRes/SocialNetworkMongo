@@ -16,14 +16,15 @@
 A mongoose back-end for social networks.
 
 ## Installation
-Clone the repo to your machine, run "npm install" at the projects base directory. If you would like to seed users for a demo, run "npm run seed". To start the server, run "npm start". Simple.
+Clone the repo to your machine, then run the command "npm install" at the project's base directory. If you would like to seed users for a demo, run "npm run seed". Simple.
 
 ## Usage
-Check this walkthrough video out that demostrates the routes and how they work, use a program like insomnia or MongoCompassDB to play around with them:
+To start the server, run "npm start".
+Check this walkthrough video out that demonstrates the routes and how they work, use a program like Insomnia or MongoCompassDB to play around with them:
 
 [![Walkthrough video](./assets/images/Preview.png)](https://www.youtube.com/watch?v=DQs5I62Aayc)
 
-There are several routes you can use to control the database, shown here below:  
+There are several routes you can use to control the database, shown below:  
 * USERS    
     - Get all users:
 
