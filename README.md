@@ -21,8 +21,7 @@ Clone the repo to your machine, run "npm install" at the projects base directory
 ## Usage
 Check this tutorial video out that demostrates the routes and how they work, use a program like insomnia or MongoCompassDB to play around with them:
 
-<video src="https://www.youtube.com/watch?v=DQs5I62Aayc" controls="controls" style="max-width: 730px;">
-</video>
+https://www.youtube.com/watch?v=DQs5I62Aayc
 
 There are several routes you can use to control the database, shown here below:  
 * USERS    
